@@ -52,9 +52,6 @@ class AutoClickB extends Check {
 	 * @throws DiscordWebhookException
 	 */
 	public function check(DataPacket $packet, PlayerAPI $playerAPI) : void {
-		if ($playerAPI->getPlacingTicks() < 100) {
-			return;
-		}
 		$ticks = $playerAPI->getExternalData("clicksTicks2");
 		$lastClick = $playerAPI->getExternalData("lastClick");
 		if ($packet instanceof LevelSoundEventPacket) {

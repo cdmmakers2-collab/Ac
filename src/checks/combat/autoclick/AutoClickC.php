@@ -68,7 +68,6 @@ class AutoClickC extends Check {
 		}
 		if (
 			$playerAPI->isDigging() ||
-			$playerAPI->getPlacingTicks() < 100 ||
 			$playerAPI->getAttackTicks() < 40 ||
 			!$playerAPI->getPlayer()->isSurvival() ||
 			!$this->canDamagable

@@ -67,6 +67,7 @@ class SpeedB extends Check {
 				$playerAPI->getTeleportCommandTicks() < 40 ||
 				$playerAPI->getOnlineTime() < 2 ||
 				$playerAPI->isOnAdhesion() ||
+				$playerAPI->isInventoryOpen() ||
 				!$player->isOnGround() ||
 				$player->isFlying() ||
 				$player->getAllowFlight() ||

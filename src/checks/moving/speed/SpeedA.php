@@ -64,6 +64,7 @@ class SpeedA extends Check {
 				$playerAPI->getHurtTicks() < 40 ||
 				$playerAPI->getTeleportCommandTicks() < 40 ||
 				$playerAPI->isOnAdhesion() ||
+				$playerAPI->isInventoryOpen() ||
 				$player->getAllowFlight() ||
 				$player->getInAirTicks() > 40 ||
 				$player->isFlying() ||
