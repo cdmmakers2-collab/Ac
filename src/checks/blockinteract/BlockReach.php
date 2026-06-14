@@ -31,6 +31,7 @@ declare(strict_types=1);
 
 namespace ReinfyTeam\Zuri\checks\blockinteract;
 
+use pocketmine\entity\effect\VanillaEffects;
 use pocketmine\event\Event;
 use pocketmine\event\player\PlayerInteractEvent;
 use ReinfyTeam\Zuri\checks\Check;
@@ -52,7 +53,12 @@ class BlockReach extends Check {
 	public function checkEvent(Event $event, PlayerAPI $playerAPI) : void {
 		if ($event instanceof PlayerInteractEvent) {
 			$block = $event->getBlock();
-			if (!$playerAPI->getPlayer()->canInteract($block->getPosition()->add(0.5, 0.5, 0.5), $playerAPI->getPlayer()->isCreative() ? $this->getConstant("max-creative-reach") : $this->getConstant("max-survival-reach"))) {
+			$reach = $playerAPI->getPlayer()->isCreative() ? $this->getConstant("max-creative-reach") : $this->getConstant("max-survival-reach");
+			$reach += 0.2;
+			if ($playerAPI->getPlayer()->getEffects()->has(VanillaEffects::SPEED())) {
+				$reach += 0.5;
+			}
+			if (!$playerAPI->getPlayer()->canInteract($block->getPosition()->add(0.5, 0.5, 0.5), $reach)) {
 				$this->failed($playerAPI);
 			}
 		}

@@ -76,23 +76,21 @@ class AutoClickC extends Check {
 		}
 		$ticks = $playerAPI->getExternalData("clicksTicks3");
 		$lastClick = $playerAPI->getExternalData("lastClick3");
-		if ($packet instanceof AnimatePacket) {
-			if ($packet->action === AnimatePacket::ACTION_SWING_ARM) {
-				if ($ticks !== null && $lastClick !== null) {
-					$diff = microtime(true) - $lastClick;
-					if ($diff > $this->getConstant("animation-diff-time")) {
-						if ($ticks > $this->getConstant("animation-diff-ticks")) {
-							$this->failed($playerAPI);
-						}
-						$playerAPI->unsetExternalData("clicksTicks3");
-						$playerAPI->unsetExternalData("lastClick3");
-					} else {
-						$playerAPI->setExternalData("clicksTicks3", $ticks + 1);
-					}
-				} else {
-					$playerAPI->setExternalData("clicksTicks3", 0);
-					$playerAPI->setExternalData("lastClick3", microtime(true));
+		if ($packet instanceof AnimatePacket && $packet->action === AnimatePacket::ACTION_SWING_ARM) {
+			$current = microtime(true);
+			$ticks = $playerAPI->getExternalData("clicksTicks3", 0);
+			$lastClick = $playerAPI->getExternalData("lastClick3", $current);
+			$diff = $current - $lastClick;
+
+			if ($diff <= $this->getConstant("animation-diff-time")) {
+				$ticks++;
+				$playerAPI->setExternalData("clicksTicks3", $ticks);
+				if ($ticks > $this->getConstant("animation-diff-ticks")) {
+					$this->failed($playerAPI);
 				}
+			} else {
+				$playerAPI->setExternalData("clicksTicks3", 1);
+				$playerAPI->setExternalData("lastClick3", $current);
 			}
 			$this->debug($playerAPI, "ticks=$ticks, lastClick=$lastClick");
 		}

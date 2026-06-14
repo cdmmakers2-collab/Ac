@@ -52,28 +52,24 @@ class AutoClickB extends Check {
 	 * @throws DiscordWebhookException
 	 */
 	public function check(DataPacket $packet, PlayerAPI $playerAPI) : void {
-		$ticks = $playerAPI->getExternalData("clicksTicks2");
-		$lastClick = $playerAPI->getExternalData("lastClick");
-		if ($packet instanceof LevelSoundEventPacket) {
-			if ($packet->sound === LevelSoundEvent::ATTACK_NODAMAGE) {
-				if ($ticks !== null && $lastClick !== null) {
-					$diff = microtime(true) - $lastClick;
-					if ($diff > $this->getConstant("diff-time")) {
-						if ($ticks >= $this->getConstant("diff-ticks")) {
-							$this->failed($playerAPI);
-						}
-						$this->debug($playerAPI, "diff=$diff, lastClick=$lastClick, ticks=$ticks");
-						$playerAPI->unsetExternalData("clicksTicks2");
-						$playerAPI->unsetExternalData("lastClick");
-					} else {
-						$playerAPI->setExternalData("clicksTicks2", $ticks + 1);
-					}
-					$this->debug($playerAPI, "lastClick=$lastClick, ticks=$ticks");
-				} else {
-					$playerAPI->setExternalData("clicksTicks2", 0);
-					$playerAPI->setExternalData("lastClick", microtime(true));
+		if ($packet instanceof LevelSoundEventPacket && $packet->sound === LevelSoundEvent::ATTACK_NODAMAGE) {
+			$ticks = $playerAPI->getExternalData("clicksTicks2", 0);
+			$lastClick = $playerAPI->getExternalData("lastClick", microtime(true));
+			$current = microtime(true);
+			$diff = $current - $lastClick;
+
+			if ($diff <= $this->getConstant("diff-time")) {
+				$ticks++;
+				$playerAPI->setExternalData("clicksTicks2", $ticks);
+				if ($ticks >= $this->getConstant("diff-ticks")) {
+					$this->failed($playerAPI);
 				}
+			} else {
+				$playerAPI->setExternalData("clicksTicks2", 1);
+				$playerAPI->setExternalData("lastClick", $current);
 			}
+
+			$this->debug($playerAPI, "diff=$diff, lastClick=$lastClick, ticks=$ticks");
 		}
 	}
 }

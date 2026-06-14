@@ -55,7 +55,7 @@ zuri:
         message: "{prefix} §f{player_name} §7suspected using §f{module} §7(§c{subtype}§7) §7PRE-VL §2{violation}"
     kick:
         kickmessage: "§fYou have been kicked from the server."
-        message: "{prefix} §f{player_name} §chas been kicked from server for hacking or abuse."
+        message: "{prefix} §f{player_name} §chas been kicked from server for Unfair Advantage: §f{module} §7(§c{subtype}§7)."
         enable: true
         # If this is enabled, this will be used. DISABLING THIS, THE FALL BACK KICK WHICH LEADS MANY BUGS, PLAYERS CANNOT BE KICKED ETC.. SO, PLEASE DO NOT DISABLE KICK COMMAND MODE FEATURE.
         commands:
@@ -113,12 +113,13 @@ zuri:
                 c: 2
             punishment: KICK
             constants:
+                  max-cps: 25
                   max-ticks: 5
                   max-deviation: 5
-                  diff-ticks: 25
-                  diff-time: 2
-                  animation-diff-time: 2
-                  animation-ticks: 15
+                  diff-ticks: 20
+                  diff-time: 1.0
+                  animation-diff-time: 1.0
+                  animation-diff-ticks: 20
         antiimmobile:
             enable: true
             maxvl: 1

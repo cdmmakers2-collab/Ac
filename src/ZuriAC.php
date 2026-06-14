@@ -113,7 +113,6 @@ use ReinfyTeam\Zuri\listener\ServerListener;
 use ReinfyTeam\Zuri\network\ProxyUDPSocket;
 use ReinfyTeam\Zuri\task\CaptchaTask;
 use ReinfyTeam\Zuri\task\ServerTickTask;
-use ReinfyTeam\Zuri\task\UpdateCheckerAsyncTask;
 use ReinfyTeam\Zuri\utils\InternetAddress;
 use ReinfyTeam\Zuri\utils\PermissionManager;
 use function version_compare;
@@ -148,7 +147,6 @@ class ZuriAC extends PluginBase {
 		$this->loadChecks();
 		$this->getScheduler()->scheduleRepeatingTask(new ServerTickTask($this), 20);
 		$this->getScheduler()->scheduleRepeatingTask(new CaptchaTask($this), 20);
-		$this->getServer()->getAsyncPool()->submitTask(new UpdateCheckerAsyncTask($this->getDescription()->getVersion()));
 		PermissionManager::getInstance()->register(ConfigManager::getData(ConfigPaths::PERMISSION_BYPASS_PERMISSION), PermissionManager::OPERATOR);
 		PermissionManager::getInstance()->register(ConfigManager::getData(ConfigPaths::ALERTS_PERMISSION), PermissionManager::OPERATOR);
 		$this->getServer()->getPluginManager()->registerEvents(new PlayerListener(), $this);
