@@ -54,7 +54,7 @@ class AutoClickC extends Check {
 
 	public function checkJustEvent(Event $event) : void {
 		if ($event instanceof EntityDamageEvent) {
-			$this->canDamagable = $event->isCancelled();
+			$this->canDamagable = !$event->isCancelled();
 		}
 	}
 

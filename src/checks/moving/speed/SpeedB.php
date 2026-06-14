@@ -78,10 +78,10 @@ class SpeedB extends Check {
 				return;
 			}
 
-			$time = $playerAPI->getExternalData("moveTimeA");
-			if ($time !== null) {
+				$time = $playerAPI->getExternalData("moveTimeA");
+				if ($time !== null) {
 				$distance = round(BlockUtil::distance($event->getFrom(), $event->getTo()), 5); // Round precision of 5
-				$timeDiff = abs($time - microtime(true));
+					$timeDiff = abs($time - microtime(true));
 				$speed = round($distance / $timeDiff, 5); // Round precision of 5; s = d/t
 
 				// Calculate the possible speed limit
@@ -111,7 +111,7 @@ class SpeedB extends Check {
 
 				// If the time travelled is greater than the calculated time limit, fail immediately. Lag back? (is player is laggy?)
 				// If speed is on limit and the distance travelled limit is high.
-				if ($time > $timeLimit && $speed > $speedLimit && $distance > $distanceLimit && $playerAPI->getPing() < self::getData(self::PING_LAGGING)) {
+				if ($timeDiff > $timeLimit && $speed > $speedLimit && $distance > $distanceLimit && $playerAPI->getPing() < self::getData(self::PING_LAGGING)) {
 					$this->failed($playerAPI);
 				}
 			}

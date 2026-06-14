@@ -206,7 +206,7 @@ class PlayerListener implements Listener {
 			$blockInteracted = $this->blockInteracted[($player->getXuid() === "" ? $player->getUniqueId()->__toString() : $player->getXuid())];
 			$xI = $blockInteracted->getPosition()->getX();
 			$zI = $blockInteracted->getPosition()->getZ();
-			if ((int) $x != (int) $xI && (int) $z != (int) $zI) {
+			if ((int) $x != (int) $xI || (int) $z != (int) $zI) {
 				$playerAPI->setActionBreakingSpecial(true);
 				$playerAPI->setBlocksBrokeASec($playerAPI->getBlocksBrokeASec() + 1);
 			} else {
@@ -239,7 +239,7 @@ class PlayerListener implements Listener {
 			$blockInteracted = $this->blockInteracted[$playerKey];
 			$xI = $blockInteracted->getPosition()->getX();
 			$zI = $blockInteracted->getPosition()->getZ();
-			if ((int) $x != (int) $xI && (int) $z != (int) $zI) {
+			if ((int) $x != (int) $xI || (int) $z != (int) $zI) {
 				$playerAPI->setActionPlacingSpecial(true);
 				$playerAPI->setBlocksPlacedASec($playerAPI->getBlocksPlacedASec() + 1);
 			} else {

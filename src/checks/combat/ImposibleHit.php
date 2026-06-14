@@ -43,7 +43,7 @@ use ReinfyTeam\Zuri\utils\discord\DiscordWebhookException;
 
 class ImposibleHit extends Check {
 	public function getName() : string {
-		return "InventoryMove";
+		return "ImpossibleHit";
 	}
 
 	public function getSubType() : string {
