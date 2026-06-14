@@ -54,12 +54,12 @@ class ReachC extends Check {
 	public function checkJustEvent(Event $event) : void {
 		if ($event instanceof EntityDamageByEntityEvent) {
 			if (($victim = $event->getEntity()) instanceof Player && ($damager = $event->getDamager()) instanceof Player) {
-				$victimAPI = PlayerAPI::getAPIPlayer($damager);
+				$victimAPI = PlayerAPI::getAPIPlayer($victim);
 				$damagerAPI = PlayerAPI::getAPIPlayer($damager);
 				
 				if (
 					$damager->isSurvival() ||
-					$entity->isSurvival() ||
+					$victim->isSurvival() ||
 					$victimAPI->getProjectileAttackTicks() < 40 ||
 					$damagerAPI->getProjectileAttackTicks() < 40 ||
 					$victimAPI->getBowShotTicks() < 40 ||

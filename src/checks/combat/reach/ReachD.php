@@ -63,7 +63,7 @@ class ReachD extends Check {
 				
 				if (
 					$damager->isSurvival() ||
-					$entity->isSurvival() ||
+					$player->isSurvival() ||
 					$playerAPI->getProjectileAttackTicks() < 40 ||
 					$damagerAPI->getProjectileAttackTicks() < 40 ||
 					$playerAPI->getBowShotTicks() < 40 ||
