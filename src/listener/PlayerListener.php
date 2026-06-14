@@ -79,8 +79,10 @@ use function microtime;
 class PlayerListener implements Listener {
 	private array $blockInteracted = [];
 	private array $clicksData = [];
+	private array $cpsResetTimer = [];
 
 	const DELTAL_TIME_CLICK = 1;
+	const CPS_RESET_TIME = 2;
 
 	public function onDataPacketReceive(DataPacketReceiveEvent $event) : void {
 		$packet = $event->getPacket();
@@ -97,13 +99,29 @@ class PlayerListener implements Listener {
 		if ($packet instanceof LevelSoundEventPacket) {
 			if ($packet->sound === LevelSoundEvent::ATTACK_NODAMAGE) {
 				$this->addCPS($playerAPI);
-				$playerAPI->setCPS($this->getCPS($playerAPI));
+				$cps = $this->getCPS($playerAPI);
+				$playerAPI->setCPS($cps);
+				$playerName = $player->getName();
+				if (!isset($this->cpsResetTimer[$playerName])) {
+					$this->cpsResetTimer[$playerName] = microtime(true);
+				} elseif (microtime(true) - $this->cpsResetTimer[$playerName] > self::CPS_RESET_TIME) {
+					$this->clicksData[$playerName] = [];
+					$this->cpsResetTimer[$playerName] = microtime(true);
+				}
 			}
 		}
 		if ($packet instanceof InventoryTransactionPacket) {
 			if ($packet->trData instanceof UseItemOnEntityTransactionData) {
 				$this->addCPS($playerAPI);
-				$playerAPI->setCPS($this->getCPS($playerAPI));
+				$cps = $this->getCPS($playerAPI);
+				$playerAPI->setCPS($cps);
+				$playerName = $player->getName();
+				if (!isset($this->cpsResetTimer[$playerName])) {
+					$this->cpsResetTimer[$playerName] = microtime(true);
+				} elseif (microtime(true) - $this->cpsResetTimer[$playerName] > self::CPS_RESET_TIME) {
+					$this->clicksData[$playerName] = [];
+					$this->cpsResetTimer[$playerName] = microtime(true);
+				}
 			}
 		}
 	}
@@ -321,7 +339,11 @@ class PlayerListener implements Listener {
 	}
 
 	public function onPlayerQuit(PlayerQuitEvent $event) : void {
-		PlayerAPI::removeAPIPlayer($event->getPlayer());
+		$player = $event->getPlayer();
+		$playerName = $player->getName();
+		unset($this->clicksData[$playerName]);
+		unset($this->cpsResetTimer[$playerName]);
+		PlayerAPI::removeAPIPlayer($player);
 	}
 
 	public function onPlayerJoin(PlayerJoinEvent $event) : void {

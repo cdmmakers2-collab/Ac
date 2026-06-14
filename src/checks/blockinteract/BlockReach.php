@@ -53,12 +53,19 @@ class BlockReach extends Check {
 	public function checkEvent(Event $event, PlayerAPI $playerAPI) : void {
 		if ($event instanceof PlayerInteractEvent) {
 			$block = $event->getBlock();
-			$reach = $playerAPI->getPlayer()->isCreative() ? $this->getConstant("max-creative-reach") : $this->getConstant("max-survival-reach");
-			$reach += 0.2;
-			if ($playerAPI->getPlayer()->getEffects()->has(VanillaEffects::SPEED())) {
-				$reach += 0.5;
+			$player = $playerAPI->getPlayer();
+			$reach = $player->isCreative() ? $this->getConstant("max-creative-reach") : $this->getConstant("max-survival-reach");
+			
+			// Add buffer for network latency
+			$reach += 0.3;
+			
+			// Add tolerance for speed effect (scale by level)
+			if ($player->getEffects()->has(VanillaEffects::SPEED())) {
+				$speedLevel = $player->getEffects()->get(VanillaEffects::SPEED())->getEffectLevel();
+				$reach += 0.15 * min($speedLevel, 5);
 			}
-			if (!$playerAPI->getPlayer()->canInteract($block->getPosition()->add(0.5, 0.5, 0.5), $reach)) {
+			
+			if (!$player->canInteract($block->getPosition()->add(0.5, 0.5, 0.5), $reach)) {
 				$this->failed($playerAPI);
 			}
 		}

@@ -40,31 +40,31 @@ zuri:
         ip: 127.0.0.1
         port: 19132
     alerts:
-        message: "{prefix} §f{player_name} §7failed §f{module} §7(§c{subtype}§7) §7VL §2{realViolation}"
+        message: "{prefix} §c⚠ §f{player_name} §7(RV: §c{realViolation}§7) §f{module}§7(§c{subtype}§7) §7| IP: §b{error_code}"
         enable: true
         admin: false #This will cause the in-game cheat detector to send it to the person with the permissions below
         permission: "zuri.admin"
     ban:
         commands:
-            - 'ban "{player_name}" Unfair Advantage'
-        message: "{prefix} §f{player_name} §chas been banned from server for hacking or abuse."
+            - 'ban "{player_name}" Unfair Advantage: {module}({subtype})'
+        message: "{prefix} §f{player_name} §7has been §c§lBANNED §r§7for §f{module} §7(§c{subtype}§7)§c."
         enable: true
     detection:
         # Detections when suddenly triggered any checks that detects any kind of hack. This might spam your console or chat. NOT RECOMMENDED.
         enable: false
-        message: "{prefix} §f{player_name} §7suspected using §f{module} §7(§c{subtype}§7) §7PRE-VL §2{violation}"
+        message: "{prefix} §6⚠ §f{player_name} §7(V: §e{violation}§7) detected with §f{module}§7(§c{subtype}§7) - tracking..."
     kick:
-        kickmessage: "§fYou have been kicked from the server."
-        message: "{prefix} §f{player_name} §chas been kicked from server for Unfair Advantage: §f{module} §7(§c{subtype}§7)."
+        kickmessage: "§c§lKICKED§r§c for Unfair Advantage\n§7Reason: §f{module} §7(§c{subtype}§7)"
+        message: "{prefix} §f{player_name} §c[KICKED] §f{module}§7(§c{subtype}§7) - RV: §c{realViolation}§7 | Reason: Unfair Advantage"
         enable: true
         # If this is enabled, this will be used. DISABLING THIS, THE FALL BACK KICK WHICH LEADS MANY BUGS, PLAYERS CANNOT BE KICKED ETC.. SO, PLEASE DO NOT DISABLE KICK COMMAND MODE FEATURE.
         commands:
               enable: true
               list:
-                 - 'kick "{player_name}" Unfair Advantage'
+                 - 'kick "{player_name}" Unfair Advantage: {module}({subtype})'
     warning:
               enable: true
-              message: "{prefix} §l§7[§eWARNING§7] §r§f{player_name} §7is tried using §f{module} §7(§c{subtype}§7)"
+              message: "{prefix} §l§e[⚠ WARNING]§r §f{player_name} §7detected suspicious §f{module}§7(§c{subtype}§7) behavior | V: §c{violation}§7 - Please stop!"
     debug:
         enable: false # Allow debugging checks: (/zuri debug)
         log-admin: false # Send to admin their data... Might to cause lag if enabled... Only works if player is in debug mode!
@@ -108,18 +108,18 @@ zuri:
             enable: true
             maxvl: 2
             pre-vl:
-                a: 30
-                b: 2
-                c: 2
+                a: 25
+                b: 3
+                c: 3
             punishment: KICK
             constants:
-                  max-cps: 25
-                  max-ticks: 5
-                  max-deviation: 5
-                  diff-ticks: 20
-                  diff-time: 1.0
-                  animation-diff-time: 1.0
-                  animation-diff-ticks: 20
+                  max-cps: 22
+                  max-ticks: 4
+                  max-deviation: 4
+                  diff-ticks: 18
+                  diff-time: 0.9
+                  animation-diff-time: 0.9
+                  animation-diff-ticks: 18
         antiimmobile:
             enable: true
             maxvl: 1

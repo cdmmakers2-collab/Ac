@@ -56,38 +56,43 @@ class AutoClickA extends Check {
 	public function check(DataPacket $packet, PlayerAPI $playerAPI) : void {
 		$player = $playerAPI->getPlayer();
 		if ($packet instanceof LevelSoundEventPacket && $packet->sound === LevelSoundEvent::ATTACK_NODAMAGE) {
+			// Primary detection: High CPS with perfect consistency
 			if ($player->isSurvival() && $playerAPI->getCPS() > $this->getConstant("max-cps")) {
-				$this->debug($playerAPI, "cps=" . $playerAPI->getCPS());
-				$this->failed($playerAPI);
-				return;
-			}
-
-			$ticks = $playerAPI->getExternalData("ticksClick");
-			$avgSpeed = $playerAPI->getExternalData("avgSpeed");
-			$avgDeviation = $playerAPI->getExternalData("avgDeviation");
-			$playerAPI->setExternalData("ticksClick", 0);
-			if ($ticks !== null && $avgSpeed !== null && $avgDeviation !== null) {
-				if ($playerAPI->isDigging() || $ticks > $this->getConstant("max-ticks")) {
-					$playerAPI->unsetExternalData("ticksClick");
-					$playerAPI->unsetExternalData("avgSpeed");
-					$playerAPI->unsetExternalData("avgDeviation");
+				if ($playerAPI->getAttackTicks() < 5) {
+					$this->debug($playerAPI, "HIGH_CPS=" . $playerAPI->getCPS());
+					$this->failed($playerAPI);
 					return;
 				}
-				$playerAPI->setExternalData("ticksClick", $ticks + 1);
+			}
 
-				$speed = $ticks * 50;
-				$playerAPI->setExternalData("avgSpeed", (($avgSpeed * 14) + $speed) / 15);
-				$deviation = abs($speed - $playerAPI->getExternalData("avgSpeed"));
-				$playerAPI->setExternalData("avgDeviation", (($avgDeviation * 9) + $deviation) / 10);
+			// Secondary detection: Deviation pattern matching
+			$ticks = $playerAPI->getExternalData("ticksClick", 0);
+			$avgSpeed = $playerAPI->getExternalData("avgSpeed", 0);
+			$avgDeviation = $playerAPI->getExternalData("avgDeviation", 0);
 
-				if ($ticks > 2 && $playerAPI->getExternalData("avgDeviation") < $this->getConstant("max-deviation")) {
-					$this->failed($playerAPI);
+			$playerAPI->setExternalData("ticksClick", 0);
+			if ($ticks > 0 && $avgSpeed > 0 && $avgDeviation > 0) {
+				if (!$playerAPI->isDigging() && $ticks <= $this->getConstant("max-ticks")) {
+					$playerAPI->setExternalData("ticksClick", $ticks + 1);
+					$speed = $ticks * 50;
+					$playerAPI->setExternalData("avgSpeed", (($avgSpeed * 14) + $speed) / 15);
+					$deviation = abs($speed - $playerAPI->getExternalData("avgSpeed"));
+					$playerAPI->setExternalData("avgDeviation", (($avgDeviation * 9) + $deviation) / 10);
+
+					// Detect extremely consistent click patterns (automated)
+					if ($ticks > 3 && $playerAPI->getExternalData("avgDeviation") < $this->getConstant("max-deviation") && $playerAPI->getCPS() > 15) {
+						$this->debug($playerAPI, "BOT_PATTERN: deviation=" . $playerAPI->getExternalData("avgDeviation"));
+						$this->failed($playerAPI);
+					}
+				} else {
+					$playerAPI->setExternalData("ticksClick", 0);
+					$playerAPI->setExternalData("avgSpeed", 0);
+					$playerAPI->setExternalData("avgDeviation", 0);
 				}
-				$this->debug($playerAPI, "avgDeviation=$avgDeviation, speed=$speed, deviation=$deviation, ticksClick=$ticks, avgSpeed=$avgSpeed");
 			} else {
-				$playerAPI->setExternalData("avgSpeed", 0);
+				$playerAPI->setExternalData("avgSpeed", 50);
 				$playerAPI->setExternalData("avgDeviation", 0);
-				$playerAPI->setExternalData("ticksClick", 0);
+				$playerAPI->setExternalData("ticksClick", 1);
 			}
 		}
 	}

@@ -59,13 +59,13 @@ class SpeedB extends Check {
 		if ($event instanceof PlayerMoveEvent) {
 			if (
 				!$player->isSurvival() ||
-				$playerAPI->getAttackTicks() < 40 ||
-				$playerAPI->getProjectileAttackTicks() < 20 ||
-				$playerAPI->getBowShotTicks() < 20 ||
-				$playerAPI->getHurtTicks() < 10 ||
-				$playerAPI->getSlimeBlockTicks() < 20 ||
-				$playerAPI->getTeleportCommandTicks() < 40 ||
-				$playerAPI->getOnlineTime() < 2 ||
+				$playerAPI->getAttackTicks() < 35 ||
+				$playerAPI->getProjectileAttackTicks() < 15 ||
+				$playerAPI->getBowShotTicks() < 15 ||
+				$playerAPI->getHurtTicks() < 8 ||
+				$playerAPI->getSlimeBlockTicks() < 15 ||
+				$playerAPI->getTeleportCommandTicks() < 35 ||
+				$playerAPI->getOnlineTime() < 1 ||
 				$playerAPI->isOnAdhesion() ||
 				$playerAPI->isInventoryOpen() ||
 				!$player->isOnGround() ||
@@ -110,9 +110,13 @@ class SpeedB extends Check {
 
 				$this->debug($playerAPI, "timeDiff=$timeDiff, speed=$speed, distance=$distance, speedLimit=$speedLimit, distanceLimit=$distanceLimit, timeLimit=$timeLimit");
 
-				// If the time travelled is greater than the calculated time limit, fail immediately. Lag back? (is player is laggy?)
-				// If speed is on limit and the distance travelled limit is high.
-				if ($timeDiff > $timeLimit && $speed > $speedLimit && $distance > $distanceLimit && $playerAPI->getPing() < self::getData(self::PING_LAGGING)) {
+				// Require multiple conditions to be true to reduce false positives
+				$violations = 0;
+				if ($speed > $speedLimit) $violations++;
+				if ($distance > $distanceLimit) $violations++;
+				if ($timeDiff > $timeLimit) $violations++;
+				
+				if ($violations >= 3 && $playerAPI->getPing() < self::getData(self::PING_LAGGING)) {
 					$this->failed($playerAPI);
 				}
 			}

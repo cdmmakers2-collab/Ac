@@ -57,16 +57,16 @@ class SpeedA extends Check {
 		$player = $playerAPI->getPlayer();
 		if ($packet instanceof PlayerAuthInputPacket) {
 			if (
-				$playerAPI->getAttackTicks() < 20 ||
-				$playerAPI->getProjectileAttackTicks() < 20 ||
-				$playerAPI->getTeleportTicks() < 60 ||
-				$playerAPI->getBowShotTicks() < 20 ||
-				$playerAPI->getHurtTicks() < 40 ||
-				$playerAPI->getTeleportCommandTicks() < 40 ||
+				$playerAPI->getAttackTicks() < 15 ||
+				$playerAPI->getProjectileAttackTicks() < 15 ||
+				$playerAPI->getTeleportTicks() < 40 ||
+				$playerAPI->getBowShotTicks() < 15 ||
+				$playerAPI->getHurtTicks() < 20 ||
+				$playerAPI->getTeleportCommandTicks() < 30 ||
 				$playerAPI->isOnAdhesion() ||
 				$playerAPI->isInventoryOpen() ||
 				$player->getAllowFlight() ||
-				$player->getInAirTicks() > 40 ||
+				$player->getInAirTicks() > 50 ||
 				$player->isFlying() ||
 				$player->hasNoClientPredictions() ||
 				!$player->isSurvival() ||
@@ -112,7 +112,7 @@ class SpeedA extends Check {
 			$dist = $previous->distance($next);
 			$distDiff = abs($dist - $expected);
 
-			if ($dist > $expected && $distDiff > $this->getConstant("threshold")) {
+			if ($dist > $expected && $distDiff > $this->getConstant("threshold") * 1.5) {
 				$this->debug($playerAPI, "expected=$expected, distance=$distDiff");
 				$this->failed($playerAPI);
 			}
