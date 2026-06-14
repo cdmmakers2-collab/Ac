@@ -7,7 +7,7 @@
 # Zuri is an anticheat made to protect the server from any may unfair advantages from the players. Open-sourced project by ReinfyTeam.
 
 zuri:
-    prefix: "§7(§e§lZuri§r§7) §8>§r"
+    prefix: " §r"
     version: "0.2.8" #This config version: DO NOT CHANGE THIS, UNLESS THE DEVELOPER TOLD YOU TO CHANGE THIS!!
     antibot:
        message: "§cSorry! You are humman?"

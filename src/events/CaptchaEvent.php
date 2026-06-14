@@ -63,7 +63,7 @@ class CaptchaEvent extends Event {
 	}
 
 	protected function sendTitle() : void {
-		$this->playerAPI->getPlayer()->sendSubTitle(ReplaceText::replace($this->playerAPI, ConfigManager::getData(ConfigPaths::CAPTCHA_TEXT)));
+		$this->playerAPI->getPlayer()->sendTitle(ReplaceText::replace($this->playerAPI, ConfigManager::getData(ConfigPaths::CAPTCHA_TEXT)));
 	}
 
 	/**

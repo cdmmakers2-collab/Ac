@@ -80,7 +80,7 @@ class PlayerListener implements Listener {
 	private array $blockInteracted = [];
 	private array $clicksData = [];
 
-	const int DELTAL_TIME_CLICK = 1;
+	const DELTAL_TIME_CLICK = 1;
 
 	public function onDataPacketReceive(DataPacketReceiveEvent $event) : void {
 		$packet = $event->getPacket();
@@ -221,6 +221,7 @@ class PlayerListener implements Listener {
 		$x = $block->getPosition()->getX();
 		$z = $block->getPosition()->getZ();
 		$player = $event->getPlayer();
+		$playerKey = ($player->getXuid() === "" ? $player->getUniqueId()->__toString() : $player->getXuid());
 		$playerAPI = PlayerAPI::getAPIPlayer($player);
 		if ($playerAPI->getPlayer() === null) {
 			return;
@@ -234,8 +235,8 @@ class PlayerListener implements Listener {
 			$event->cancel();
 			$playerAPI->setFlagged(false);
 		}
-		if (isset($this->blockInteracted[$player->getXuid()])) {
-			$blockInteracted = $this->blockInteracted[$player->getXuid()];
+		if (isset($this->blockInteracted[$playerKey])) {
+			$blockInteracted = $this->blockInteracted[$playerKey];
 			$xI = $blockInteracted->getPosition()->getX();
 			$zI = $blockInteracted->getPosition()->getZ();
 			if ((int) $x != (int) $xI && (int) $z != (int) $zI) {
@@ -243,7 +244,7 @@ class PlayerListener implements Listener {
 				$playerAPI->setBlocksPlacedASec($playerAPI->getBlocksPlacedASec() + 1);
 			} else {
 				$playerAPI->setBlocksPlacedASec(0);
-				unset($this->blockInteracted[$player->getXuid()]);
+				unset($this->blockInteracted[$playerKey]);
 			}
 		}
 	}
@@ -292,7 +293,7 @@ class PlayerListener implements Listener {
 	}
 
 	public function onEntityTeleport(EntityTeleportEvent $event) : void {
-		if (($entity = $event->getEntity()) instanceof Player) {
+		if (!(($entity = $event->getEntity()) instanceof Player)) {
 			return;
 		}
 

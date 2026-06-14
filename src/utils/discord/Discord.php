@@ -115,10 +115,6 @@ class Discord extends ConfigManager {
 					$embed->setImage($webhookConfig->getNested("$sendType.embed.image.value"));
 				}
 
-				if ($webhookConfig->getNested("$sendType.embed.image.enable", false) === true) {
-					$embed->setImage($webhookConfig->getNested("$sendType.embed.image.value"));
-				}
-
 				if ($webhookConfig->getNested("$sendType.embed.timestamp", false) === true) {
 					$embed->setTimestamp(new DateTime("NOW"));
 				}
@@ -129,7 +125,7 @@ class Discord extends ConfigManager {
 
 				if ($webhookConfig->getNested("$sendType.embed.fields.enable", false) === true) {
 					foreach ($webhookConfig->getNested("$sendType.embed.fields.value") as $field_name => $fieldInfo) {
-						if (!empty($fieldInfo["title"]) && !empty($fieldInfo["value"]) && !empty($fieldInfo["inline"])) { // Assuming that these info's are not empty!
+						if (!empty($fieldInfo["title"]) && !empty($fieldInfo["value"]) && isset($fieldInfo["inline"])) {
 							$embed->addField(ReplaceText::replace($playerAPI, $fieldInfo["title"], ($moduleInfo !== null ? $moduleInfo["name"] : ""), ($moduleInfo !== null ? $moduleInfo["subType"] : "")), ReplaceText::replace($playerAPI, $fieldInfo["value"], ($moduleInfo !== null ? $moduleInfo["name"] : ""), ($moduleInfo !== null ? $moduleInfo["subType"] : "")), $fieldInfo["inline"]);
 						} else {
 							throw new DiscordWebhookException("Field \"$field_name\" has an empty required variables. Please fix them on webhook.yml!");
