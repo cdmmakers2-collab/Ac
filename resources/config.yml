@@ -108,18 +108,18 @@ zuri:
             enable: true
             maxvl: 2
             pre-vl:
-                a: 25
-                b: 3
-                c: 3
+                a: 50
+                b: 8
+                c: 8
             punishment: KICK
             constants:
                   max-cps: 22
                   max-ticks: 4
                   max-deviation: 4
-                  diff-ticks: 18
-                  diff-time: 0.9
-                  animation-diff-time: 0.9
-                  animation-diff-ticks: 18
+                  diff-ticks: 25
+                  diff-time: 1.2
+                  animation-diff-time: 1.2
+                  animation-diff-ticks: 25
         antiimmobile:
             enable: true
             maxvl: 1

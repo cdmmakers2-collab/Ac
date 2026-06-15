@@ -139,6 +139,11 @@ abstract class Check extends ConfigManager {
 			return false;
 		}
 
+		// Check bypass BEFORE sending any alerts
+		if ($bypass) {
+			return false;
+		}
+
 		if ($reachedMaxViolations) {
 			$playerAPI->addRealViolation($this->getName());
 			ZuriAC::getInstance()->getServer()->getLogger()->info(ReplaceText::replace($playerAPI, self::getData(self::ALERTS_MESSAGE), $this->getName(), $this->getSubType()));
@@ -156,10 +161,6 @@ abstract class Check extends ConfigManager {
 					}
 				}
 			}
-		}
-
-		if ($bypass) {
-			return false;
 		}
 
 		if ($playerAPI->isDebug()) {

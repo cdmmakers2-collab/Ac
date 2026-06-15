@@ -56,13 +56,11 @@ class AutoClickA extends Check {
 	public function check(DataPacket $packet, PlayerAPI $playerAPI) : void {
 		$player = $playerAPI->getPlayer();
 		if ($packet instanceof LevelSoundEventPacket && $packet->sound === LevelSoundEvent::ATTACK_NODAMAGE) {
-			// Primary detection: High CPS with perfect consistency
+			// Primary detection: High CPS
 			if ($player->isSurvival() && $playerAPI->getCPS() > $this->getConstant("max-cps")) {
-				if ($playerAPI->getAttackTicks() < 5) {
-					$this->debug($playerAPI, "HIGH_CPS=" . $playerAPI->getCPS());
-					$this->failed($playerAPI);
-					return;
-				}
+				$this->debug($playerAPI, "HIGH_CPS=" . $playerAPI->getCPS());
+				$this->failed($playerAPI);
+				return;
 			}
 
 			// Secondary detection: Deviation pattern matching

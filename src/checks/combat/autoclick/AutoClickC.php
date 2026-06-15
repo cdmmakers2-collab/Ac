@@ -74,8 +74,6 @@ class AutoClickC extends Check {
 		) {
 			return;
 		}
-		$ticks = $playerAPI->getExternalData("clicksTicks3");
-		$lastClick = $playerAPI->getExternalData("lastClick3");
 		if ($packet instanceof AnimatePacket && $packet->action === AnimatePacket::ACTION_SWING_ARM) {
 			$current = microtime(true);
 			$ticks = $playerAPI->getExternalData("clicksTicks3", 0);
