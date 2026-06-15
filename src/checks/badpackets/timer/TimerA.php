@@ -53,17 +53,18 @@ class TimerA extends Check {
 	 */
 	public function check(DataPacket $packet, PlayerAPI $playerAPI) : void {
 		if ($packet instanceof PlayerAuthInputPacket) {
-			$tps = Server::getInstance()->getTicksPerSecond();
-
-			if ($tps < 19 && $playerAPI->getPing() < self::getData(self::PING_LAGGING)) {
-				$playerAPI->setExternalData("TimerATick", $tps - $packet->getTick());
+			if ($playerAPI->getPing() >= self::getData(self::PING_LAGGING)) {
+				return;
 			}
+
+			$tps = Server::getInstance()->getTicksPerSecond();
+			$playerAPI->setExternalData("TimerATick", $tps - $packet->getTick());
 
 			$delayTicks = $playerAPI->getExternalData("TimerATick");
 
 			if ($delayTicks !== null) {
 				$tickDiff = $delayTicks - $packet->getTick();
-				if ( $tickDiff >= ($this->getConstant("max-diff") + (abs(20 - $tps) * 2)) ) {
+				if ($tickDiff >= ($this->getConstant("max-diff") + (abs(20 - $tps) * 2))) {
 					$this->failed($playerAPI);
 				}
 			}
